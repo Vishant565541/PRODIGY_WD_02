@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Simple Stopwatch</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background: #181818;
+      /* dark background */
+      overflow: hidden;
+    }
+    .background-3d {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      background: linear-gradient(120deg, #181818 0%, #232323 100%);
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .sphere {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(12px);
+      opacity: 0.5;
+      mix-blend-mode: lighten;
+      will-change: transform;
+    }
+    .sphere1 {
+      width: 320px; height: 320px;
+      background: radial-gradient(circle at 30% 30%, #00ffe7 0%, #005e5b 80%, transparent 100%);
+      left: 5vw; top: 10vh;
+      animation: float1 14s infinite alternate ease-in-out;
+      box-shadow: 0 0 80px 20px #00ffe7aa;
+    }
+    .sphere2 {
+      width: 220px; height: 220px;
+      background: radial-gradient(circle at 70% 70%, #00bfff 0%, #232323 80%, transparent 100%);
+      right: 10vw; bottom: 12vh;
+      animation: float2 16s infinite alternate-reverse ease-in-out;
+      box-shadow: 0 0 60px 10px #00bfff99;
+    }
+    .sphere3 {
+      width: 180px; height: 180px;
+      background: radial-gradient(circle at 50% 50%, #ff00cc 0%, #232323 80%, transparent 100%);
+      left: 60vw; top: 60vh;
+      animation: float3 18s infinite alternate ease-in-out;
+      box-shadow: 0 0 60px 10px #ff00cc99;
+    }
+    .sphere4 {
+      width: 140px; height: 140px;
+      background: radial-gradient(circle at 60% 40%, #ffea00 0%, #ff8800 80%, transparent 100%);
+      left: 30vw; bottom: 8vh;
+      animation: float4 20s infinite alternate-reverse ease-in-out;
+      box-shadow: 0 0 40px 8px #ffea0099;
+    }
+    .sphere5 {
+      width: 100px; height: 100px;
+      background: radial-gradient(circle at 40% 60%, #00ffb3 0%, #00bfff 80%, transparent 100%);
+      right: 25vw; top: 20vh;
+      animation: float5 22s infinite alternate ease-in-out;
+      box-shadow: 0 0 30px 6px #00ffb399;
+    }
+    .sphere6 {
+      width: 160px; height: 160px;
+      background: radial-gradient(circle at 60% 60%, #ff0077 0%, #ffea00 80%, transparent 100%);
+      left: 75vw; top: 15vh;
+      animation: float6 19s infinite alternate-reverse ease-in-out;
+      box-shadow: 0 0 50px 10px #ff007799;
+    }
+    .sphere7 {
+      width: 90px; height: 90px;
+      background: radial-gradient(circle at 50% 50%, #00ffea 0%, #ff00cc 80%, transparent 100%);
+      left: 10vw; bottom: 20vh;
+      animation: float7 25s infinite alternate ease-in-out;
+      box-shadow: 0 0 20px 4px #00ffea99;
+    }
+    @keyframes float1 {
+      0% { transform: translateY(0) scale(1) rotate(0deg); }
+      100% { transform: translateY(-60px) scale(1.12) rotate(20deg); }
+    }
+    @keyframes float2 {
+      0% { transform: translateY(0) scale(1) rotate(0deg); }
+      100% { transform: translateY(50px) scale(1.08) rotate(-15deg); }
+    }
+    @keyframes float3 {
+      0% { transform: translate(0,0) scale(1) rotate(0deg); }
+      100% { transform: translate(-40px, -40px) scale(1.15) rotate(30deg); }
+    }
+    @keyframes float4 {
+      0% { transform: translate(0,0) scale(1) rotate(0deg); }
+      100% { transform: translate(30px, 60px) scale(1.2) rotate(-25deg); }
+    }
+    @keyframes float5 {
+      0% { transform: translate(0,0) scale(1) rotate(0deg); }
+      100% { transform: translate(-30px, 40px) scale(1.1) rotate(15deg); }
+    }
+    @keyframes float6 {
+      0% { transform: translate(0,0) scale(1) rotate(0deg); }
+      100% { transform: translate(60px, -30px) scale(1.18) rotate(40deg); }
+    }
+    @keyframes float7 {
+      0% { transform: translate(0,0) scale(1) rotate(0deg); }
+      100% { transform: translate(-20px, 50px) scale(1.05) rotate(-30deg); }
+    }
+    .stopwatch {
+      text-align: center;
+      background: #232323;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 0 24px rgba(0,0,0,0.5);
+      transition: box-shadow 0.3s;
+      animation: fadeIn 1s ease;
+      z-index: 1;
+      position: relative;
+    }
+    .stopwatch:hover {
+      box-shadow: 0 0 40px 8px #00ffe7a0;
+    }
+    #display {
+      font-size: 2.5em;
+      margin-bottom: 20px;
+      color: #00ffe7;
+      letter-spacing: 2px;
+      text-shadow: 0 0 8px #00ffe7, 0 0 2px #fff;
+      animation: pulse 2s infinite;
+    }
+    button {
+      padding: 10px 22px;
+      margin: 7px;
+      font-size: 1.1em;
+      border: none;
+      border-radius: 6px;
+      background: linear-gradient(90deg, #00ffe7 0%, #005e5b 100%);
+      color: #181818;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 2px 8px #00ffe733;
+      transition: transform 0.15s, box-shadow 0.15s, background 0.3s;
+      outline: none;
+    }
+    button:hover {
+      transform: scale(1.08);
+      box-shadow: 0 4px 16px #00ffe7cc;
+      background: linear-gradient(90deg, #005e5b 0%, #00ffe7 100%);
+      color: #fff;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse {
+      0%, 100% { text-shadow: 0 0 8px #00ffe7, 0 0 2px #fff; }
+      50% { text-shadow: 0 0 24px #00ffe7, 0 0 8px #fff; }
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 15px;
+      text-align: left;
+    }
+    .stopwatch-rings {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 0;
+      pointer-events: none;
+    }
+    .ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 3px solid rgba(0,255,231,0.3);
+      box-shadow: 0 0 24px 4px #00ffe7aa;
+      animation: rotateRing 8s linear infinite;
+    }
+    .ring2 {
+      width: 340px; height: 340px;
+      border-color: rgba(255,0,204,0.2);
+      box-shadow: 0 0 24px 4px #ff00cc88;
+      animation: rotateRingReverse 12s linear infinite;
+      top: -20px; left: -20px;
+    }
+    .ring3 {
+      width: 400px; height: 400px;
+      border-color: rgba(255,234,0,0.15);
+      box-shadow: 0 0 24px 4px #ffea0088;
+      animation: rotateRing 18s linear infinite;
+      top: -50px; left: -50px;
+    }
+    .ring1 {
+      width: 260px; height: 260px;
+      border-color: rgba(0,255,231,0.3);
+      box-shadow: 0 0 24px 4px #00ffe7aa;
+      animation: rotateRing 8s linear infinite;
+      top: 20px; left: 20px;
+    }
+    @keyframes rotateRing {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    @keyframes rotateRingReverse {
+      0% { transform: rotate(360deg); }
+      100% { transform: rotate(0deg); }
+    }
+    .stopwatch-hand {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 6px;
+      height: 160px;
+      background: linear-gradient(180deg, #ff00cc 0%, #00ffe7 100%);
+      border-radius: 3px;
+      transform-origin: 50% 90%;
+      transform: translate(-50%, -90%) rotate(0deg);
+      box-shadow: 0 0 16px #ff00cc88;
+      animation: tickHand 2s steps(60, end) infinite;
+      z-index: 1;
+    }
+    @keyframes tickHand {
+      0% { transform: translate(-50%, -90%) rotate(0deg); }
+      100% { transform: translate(-50%, -90%) rotate(360deg); }
+    }
+    .stopwatch-center {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 32px;
+      height: 32px;
+      background: radial-gradient(circle, #fff 0%, #00ffe7 60%, #232323 100%);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 16px #00ffe7cc;
+      z-index: 2;
+      animation: pulseCenter 2s infinite;
+    }
+    @keyframes pulseCenter {
+      0%, 100% { box-shadow: 0 0 16px #00ffe7cc, 0 0 0 0 #00ffe700; }
+      50% { box-shadow: 0 0 32px #00ffe7cc, 0 0 24px 16px #00ffe733; }
+    }
+  </style>
+</head>
+<body>
+  <div class="background-3d">
+    <div class="sphere sphere1"></div>
+    <div class="sphere sphere2"></div>
+    <div class="sphere sphere3"></div>
+    <div class="sphere sphere4"></div>
+    <div class="sphere sphere5"></div>
+    <div class="sphere sphere6"></div>
+    <div class="sphere sphere7"></div>
+    <div class="stopwatch-rings">
+      <div class="ring ring1"></div>
+      <div class="ring ring2"></div>
+      <div class="ring ring3"></div>
+      <div class="stopwatch-hand"></div>
+      <div class="stopwatch-center"></div>
+    </div>
+  </div>
+  <div class="stopwatch">
+    <div id="display">00:00:00.000</div>
+    <button onclick="start()">Start</button>
+    <button onclick="pause()">Pause</button>
+    <button onclick="reset()">Reset</button>
+  </div>
+
+  <script>
+    let startTime = 0, elapsed = 0, timer;
+    let isRunning = false;
+
+    function start() {
+      if (!isRunning) {
+        startTime = Date.now() - elapsed;
+        timer = setInterval(update, 10);
+        isRunning = true;
+      }
+    }
+
+    function pause() {
+      if (isRunning) {
+        clearInterval(timer);
+        elapsed = Date.now() - startTime;
+        isRunning = false;
+      }
+    }
+
+    function reset() {
+      clearInterval(timer);
+      elapsed = 0;
+      isRunning = false;
+      document.getElementById("display").textContent = "00:00:00.000";
+    }
+
+    function update() {
+      let time = Date.now() - startTime;
+      let ms = time % 1000;
+      let s = Math.floor(time / 1000) % 60;
+      let m = Math.floor(time / 60000) % 60;
+      let h = Math.floor(time / 3600000);
+      document.getElementById("display").textContent =
+        `${pad(h)}:${pad(m)}:${pad(s)}.${ms.toString().padStart(3, '0')}`;
+    }
+
+    function pad(n) {
+      return n.toString().padStart(2, '0');
+    }
+  </script>
+</body>
+</html>
